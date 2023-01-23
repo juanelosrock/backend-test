@@ -70,6 +70,7 @@ class UsuariosController extends Controller
 		if(isset($_POST['Usuarios']))
 		{
 			$model->attributes=$_POST['Usuarios'];
+			$model->clave = md5($_POST['Usuarios']['clave']);
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->ID));
 		}
@@ -87,13 +88,19 @@ class UsuariosController extends Controller
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
-
+		$clave = $model->clave;
+		$model->clave = '';
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Usuarios']))
 		{
 			$model->attributes=$_POST['Usuarios'];
+			if(!empty($_POST['Usuarios']['clave'])){
+				$model->clave = md5($_POST['Usuarios']['clave']);
+			}else{
+				$model->clave = $clave;
+			}
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->ID));
 		}

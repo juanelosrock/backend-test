@@ -38,7 +38,7 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'clave'); ?>
+		<?php echo $form->labelEx($model,'clave'); ?><?php echo !$model->isNewRecord ? 'Escribe tu nueva clave para cambiarla o dejalo vacio para mantener la actual' : '' ?>
 		<?php echo $form->textField($model,'clave',array('size'=>50,'maxlength'=>50)); ?>
 		<?php echo $form->error($model,'clave'); ?>
 	</div>
