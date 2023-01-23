@@ -7,7 +7,7 @@
 // CWebApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'Sibco RestApi',
+	'name'=>'Api Test Priverion',
 
 	// preloading 'log' component
 	'preload'=>array('log'),
@@ -29,7 +29,7 @@ return array(
 			'class'=>'system.gii.GiiModule',
 			'password'=>'12345',
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
-			'ipFilters'=>array('127.0.0.1','::1'),
+			'ipFilters'=>array('181.48.82.74','::1'),
 		),
 		
 	),
@@ -58,10 +58,10 @@ return array(
 		// uncomment the following to use a MySQL database
 		
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=itdelivery',
+			'connectionString' => 'mysql:host=localhost;dbname=priverion_test',
 			'emulatePrepare' => true,
 			'username' => 'root',
-			'password' => '',
+			'password' => 'S1st3m4s2808',
 			'charset' => 'utf8',
 		),			
 		

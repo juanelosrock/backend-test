@@ -5,16 +5,11 @@
  *
  * The followings are the available columns in table 'usuarios':
  * @property integer $ID
- * @property string $nick
- * @property string $password
+ * @property string $correo
+ * @property string $nit
+ * @property string $usuario
+ * @property string $clave
  * @property string $nombre
- * @property integer $extension
- * @property string $fecha_creacion
- * @property string $fecha_login
- * @property integer $estado
- *
- * The followings are the available model relations:
- * @property Pedidos[] $pedidoses
  */
 class Usuarios extends CActiveRecord
 {
@@ -34,14 +29,12 @@ class Usuarios extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('nick, password, nombre', 'required'),
-			array('extension, estado', 'numerical', 'integerOnly'=>true),
-			array('nick', 'length', 'max'=>50),
-			array('password, nombre', 'length', 'max'=>100),
-			array('fecha_creacion, fecha_login', 'safe'),
+			array('correo, nit, usuario, clave, nombre', 'required'),
+			array('correo, usuario, clave, nombre', 'length', 'max'=>50),
+			array('nit', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('ID, nick, password, nombre, extension, fecha_creacion, fecha_login, estado', 'safe', 'on'=>'search'),
+			array('ID, correo, nit, usuario, clave, nombre', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,7 +46,6 @@ class Usuarios extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'pedidoses' => array(self::HAS_MANY, 'Pedidos', 'agente'),
 		);
 	}
 
@@ -64,13 +56,11 @@ class Usuarios extends CActiveRecord
 	{
 		return array(
 			'ID' => 'ID',
-			'nick' => 'Nick',
-			'password' => 'Password',
+			'correo' => 'Correo',
+			'nit' => 'Nit',
+			'usuario' => 'Usuario',
+			'clave' => 'Clave',
 			'nombre' => 'Nombre',
-			'extension' => 'Extension',
-			'fecha_creacion' => 'Fecha Creacion',
-			'fecha_login' => 'Fecha Login',
-			'estado' => 'Estado',
 		);
 	}
 
@@ -93,27 +83,15 @@ class Usuarios extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('ID',$this->ID);
-		$criteria->compare('nick',$this->nick,true);
-		$criteria->compare('password',$this->password,true);
+		$criteria->compare('correo',$this->correo,true);
+		$criteria->compare('nit',$this->nit,true);
+		$criteria->compare('usuario',$this->usuario,true);
+		$criteria->compare('clave',$this->clave,true);
 		$criteria->compare('nombre',$this->nombre,true);
-		$criteria->compare('extension',$this->extension);
-		$criteria->compare('fecha_creacion',$this->fecha_creacion,true);
-		$criteria->compare('fecha_login',$this->fecha_login,true);
-		$criteria->compare('estado',$this->estado);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
-	}
-	
-	public function validatePassword($password)
-	{
-		return $this->hashPassword($password)===$this->password;
-	}
-	
-	public function hashPassword($password)
-	{
-	 return md5($password);
 	}
 
 	/**
