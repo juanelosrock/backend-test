@@ -46,7 +46,18 @@ class UsuariosController extends Controller
 	}
 
 	public function actionBanderas(){
-		$this->render('banderas');
+
+		$connection = Mongodb::getConect();
+		$coleccion = $connection->itdelivery->paises;	
+		$orden = ['sort' => ['_id' => -1]];
+		$query = [];
+		/*if(isset($data)){
+			$query = ['codigo' => $data];
+		}*/	
+		$resultado = $coleccion->find($query,$orden);		
+		$paises = CJSON::decode(CJSON::encode($resultado), true);
+
+		$this->render('banderas', array('paises'=>$paises));
 	}
 
 	/**
