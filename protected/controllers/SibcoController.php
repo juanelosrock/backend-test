@@ -106,7 +106,9 @@ class SibcoController extends Controller
 						$resultado = $coleccion->findOne($query);							
 						$validacion = CJSON::decode(CJSON::encode($resultado), true);
 						if(empty($validacion)){
-							$resultado = $coleccion->insertOne( $pais );
+							$resultado = $coleccion->insertOne( $pais );							
+							$query = ['codigo' => $data['codigo']];								
+							$resultado = $coleccion->findOne($query);							
 							$salida = CJSON::decode(CJSON::encode($resultado), true);
 							$this->emitRest('req.render.json', [
 								GenericForm::formatOutput($salida,'Object Paises')
@@ -153,6 +155,28 @@ class SibcoController extends Controller
 							$salida = CJSON::decode(CJSON::encode($resultado), true);
 						}
 						
+						
+						$this->emitRest('req.render.json', [
+							GenericForm::formatOutput($salida,'Object Paises')
+						]); 						
+                    } 
+                }  
+            });
+
+			$this->onRest('req.delete.paises.render', function($data) {
+				
+                if(isset($_SERVER['HTTP_AUTHORIZATION'])){
+                    $token = json_decode(json_encode(Yii::app()->JWT->decode($_SERVER['HTTP_AUTHORIZATION'])), True);                                       
+                    $identity = new UserIdentity($token['nick'], $token['clave']);
+                    $identity->authenticate();
+                    if ($identity->errorCode == UserIdentity::ERROR_NONE){  						
+						$connection = Mongodb::getConect();
+						$coleccion = $connection->itdelivery->paises;																							
+						$query = ['codigo' => $data];								
+						$resultado = $coleccion->deleteOne($query);													
+						$salida = [
+							"Delete" => "El codigo ".$data." ha sido borrado",
+						]; 
 						
 						$this->emitRest('req.render.json', [
 							GenericForm::formatOutput($salida,'Object Paises')
