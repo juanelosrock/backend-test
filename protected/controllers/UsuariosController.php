@@ -28,7 +28,7 @@ class UsuariosController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','banderas'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -43,6 +43,10 @@ class UsuariosController extends Controller
 				'users'=>array('*'),
 			),
 		);
+	}
+
+	public function actionBanderas(){
+		$this->render('banderas');
 	}
 
 	/**

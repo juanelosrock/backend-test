@@ -145,7 +145,7 @@ class SibcoController extends Controller
 						if(isset($data['moneda'])){
 							$data_update['moneda'] = $data['moneda'];
 						}
-						if(isset($data['bandera'])){
+						if(isset($data['bandera']) && !empty($data['bandera'])){
 							$data_update['bandera'] = $data['bandera'];
 						}
 						if(!empty($data_update)){
