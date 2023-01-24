@@ -32,11 +32,11 @@ class GenericForm extends CFormModel
         ];
     }
     
-    public function formatOutput($data,$info){
+    public function formatOutput($data,$info,$success=true){
         $message = $info;
         $salida = ['totalCount'=>count($data),'data'=>$data];                
         return [
-            'success'=>true,
+            'success'=>$success,
             'message'=>$message,
             'data'=>$salida
         ];

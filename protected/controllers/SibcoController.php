@@ -100,9 +100,59 @@ class SibcoController extends Controller
 						];
 						
 						$connection = Mongodb::getConect();
-						$coleccion = $connection->itdelivery->paises;							
-						$resultado = $coleccion->insertOne( $pais );
-						$salida = CJSON::decode(CJSON::encode($resultado), true);
+						$coleccion = $connection->itdelivery->paises;	
+						
+						$query = ['codigo' => $data['codigo']];								
+						$resultado = $coleccion->findOne($query);							
+						$validacion = CJSON::decode(CJSON::encode($resultado), true);
+						if(empty($validacion)){
+							$resultado = $coleccion->insertOne( $pais );
+							$salida = CJSON::decode(CJSON::encode($resultado), true);
+							$this->emitRest('req.render.json', [
+								GenericForm::formatOutput($salida,'Object Paises')
+							]); 
+						}else{
+							$salida = [
+								"Error" => "El codigo ya existe",
+							];
+							$this->emitRest('req.render.json', [
+								GenericForm::formatOutput($salida,'Object Paises',false)
+							]); 
+						}
+												
+                    } 
+                }  
+            });
+
+			$this->onRest('req.post.paises.render', function($data) {
+				
+                if(isset($_SERVER['HTTP_AUTHORIZATION'])){
+                    $token = json_decode(json_encode(Yii::app()->JWT->decode($_SERVER['HTTP_AUTHORIZATION'])), True);                                       
+                    $identity = new UserIdentity($token['nick'], $token['clave']);
+                    $identity->authenticate();
+                    if ($identity->errorCode == UserIdentity::ERROR_NONE){  
+						
+						$salida = [];
+						
+						$connection = Mongodb::getConect();
+						$coleccion = $connection->itdelivery->paises;
+						$data_update = [];
+						if(isset($data['nombre'])){
+							$data_update['nombre'] = $data['nombre'];
+						}
+						if(isset($data['moneda'])){
+							$data_update['moneda'] = $data['moneda'];
+						}
+						if(isset($data['bandera'])){
+							$data_update['bandera'] = $data['bandera'];
+						}
+						if(!empty($data_update)){
+							$resultado = $coleccion->updateOne( ['codigo' => $data['codigo']],['$set' => $data_update], ['upsert' => true] );																			
+							$query = ['codigo' => $data['codigo']];								
+							$resultado = $coleccion->findOne($query);							
+							$salida = CJSON::decode(CJSON::encode($resultado), true);
+						}
+						
 						
 						$this->emitRest('req.render.json', [
 							GenericForm::formatOutput($salida,'Object Paises')
