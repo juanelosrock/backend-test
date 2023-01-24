@@ -52,7 +52,7 @@ class SibcoController extends Controller
 
                     $jwt = Yii::app()->JWT->encode($token);
 
-                    echo CJSON::encode(['name'=>$identity->username,'token'=>$jwt,'vendedor'=>$identity->vendedor, 'tienda'=>$identity->tienda]);	
+                    echo CJSON::encode(['name'=>$identity->username,'token'=>$jwt,'response'=>'ok']);	
                 }else{
                     echo CJSON::encode($identity->errorCode);//Aqui ponemos el error de logueo
                 }			
