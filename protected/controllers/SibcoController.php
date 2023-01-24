@@ -58,28 +58,28 @@ class SibcoController extends Controller
                 }			
             });
 			
-			$this->onRest('req.post.validardireccion.render', function($data) {
-                if(isset($data['token'])){
-                    $token = json_decode(json_encode(Yii::app()->JWT->decode($data['token'])), True);                                       
+			$this->onRest('req.get.paises.render', function($data) {
+				
+                if(isset($_SERVER['HTTP_AUTHORIZATION'])){
+                    $token = json_decode(json_encode(Yii::app()->JWT->decode($_SERVER['HTTP_AUTHORIZATION'])), True);                                       
                     $identity = new UserIdentity($token['nick'], $token['clave']);
                     $identity->authenticate();
                     if ($identity->errorCode == UserIdentity::ERROR_NONE){  
-						$criteria = new CDbCriteria();
-						$criteria->compare('url2', $data['url']);
-						$tienda = Tiendas::model()->find($criteria);
-						if(!empty($tienda)){
-							$ciudad = $data['ciudad'];
-							$nomenclatura = $data['nomenclatura'];
-							$cll = $data['cll'];
-							$cra = $data['cra'];
-							$ctrlcll = $data['ctrlcll'];
-							$ctrlcra = $data['ctrlcra'];
-							$direccion = Clientes::cobertura($ciudad, $nomenclatura, $cll, $cra, $ctrlcll, $ctrlcra, $tienda->ID);             		                    	                    	
-							echo $direccion; 
-						}else{
-							echo "-1";
-						}
-						                                                                   
+						
+						$connection = Mongodb::getConect();
+						$coleccion = $connection->itdelivery->paises;	
+						$orden = ['sort' => ['_id' => -1]];
+						$query = [];
+						if(isset($data)){
+							$query = ['codigo' => $data];
+						}	
+						$resultado = $coleccion->find($query,$orden);
+						//$resultado = $coleccion->find(['pedido.fecha' => date('Y-m-d')]);
+						$salida = CJSON::decode(CJSON::encode($resultado), true);
+						
+						$this->emitRest('req.render.json', [
+							GenericForm::formatOutput($salida,'Object Paises')
+						]); 						
                     } 
                 }  
             });						
